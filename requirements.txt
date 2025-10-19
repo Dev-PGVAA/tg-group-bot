@@ -1,0 +1,7 @@
+python-telegram-bot==21.7
+telethon==1.36.0
+python-dotenv==1.0.0
+apscheduler==3.10.4
+pandas==2.2.3
+matplotlib
+Pillow
