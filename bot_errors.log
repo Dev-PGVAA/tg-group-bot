@@ -1,0 +1,11 @@
+2025-10-21 21:49:49,360 ERROR: No error handlers are registered, logging exception.
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/telegram/ext/_application.py", line 1319, in process_update
+    await coroutine
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/telegram/ext/_handlers/basehandler.py", line 158, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/artem/Documents/Develop/Projects/tg-bot/src/bot.py", line 190, in handle_text_for_weight
+    text = update.message.text.strip()
+           ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'text'
