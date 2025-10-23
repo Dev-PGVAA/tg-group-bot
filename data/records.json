@@ -1,0 +1,38 @@
+[
+	{
+		"user": "@dead1ift",
+		"movement": "Жим",
+		"weight": 107.5,
+		"date": "21-10-2025"
+	},
+	{
+		"user": "@dead1ift",
+		"movement": "Присед",
+		"weight": 110.0,
+		"date": "21-10-2025"
+	},
+	{
+		"user": "@dead1ift",
+		"movement": "Тяга",
+		"weight": 100.0,
+		"date": "21-10-2025"
+	},
+	{
+		"user": "@dead1ift",
+		"movement": "Строгий подъем на бицепс",
+		"weight": 50.0,
+		"date": "21-10-2025"
+	},
+	{
+		"user": "@sane_4eek",
+		"movement": "Жим",
+		"weight": 100.0,
+		"date": "22-10-2025"
+	},
+	{
+		"user": "@sane_4eek",
+		"movement": "Строгий подъем на бицепс",
+		"weight": 50.0,
+		"date": "22-10-2025"
+	}
+]

@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Admin Dashboard</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+			body {
+				font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+					Oxygen, Ubuntu, Cantarell, sans-serif;
+				background: #f5f6fa;
+				min-height: 100vh;
+				padding: 20px;
+				color: #2c3e50;
+			}
+			.container {
+				max-width: 1400px;
+				margin: 0 auto;
+			}
+			.header {
+				background: white;
+				padding: 20px 30px;
+				border-radius: 8px;
+				margin-bottom: 20px;
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+			}
+			.header h1 {
+				font-size: 24px;
+				font-weight: 600;
+				color: #2c3e50;
+			}
+			.grid {
+				display: grid;
+				gap: 20px;
+			}
+			.card {
+				background: white;
+				border-radius: 8px;
+				padding: 24px;
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+			}
+			.card h2 {
+				font-size: 18px;
+				font-weight: 600;
+				margin-bottom: 20px;
+				color: #2c3e50;
+				display: flex;
+				align-items: center;
+				gap: 8px;
+			}
+			.btn {
+				background: #3498db;
+				border: none;
+				color: white;
+				padding: 10px 20px;
+				border-radius: 6px;
+				cursor: pointer;
+				transition: background 0.2s;
+				font-size: 14px;
+				font-weight: 500;
+			}
+			.btn:hover {
+				background: #2980b9;
+			}
+			.btn.small {
+				padding: 8px 16px;
+				font-size: 13px;
+			}
+			.btn.tiny {
+				padding: 6px 12px;
+				font-size: 12px;
+			}
+			.btn.success {
+				background: #27ae60;
+			}
+			.btn.success:hover {
+				background: #229954;
+			}
+			.btn.danger {
+				background: #e74c3c;
+			}
+			.btn.danger:hover {
+				background: #c0392b;
+			}
+			.btn.secondary {
+				background: #95a5a6;
+			}
+			.btn.secondary:hover {
+				background: #7f8c8d;
+			}
+			.btn:disabled {
+				background: #bdc3c7;
+				cursor: not-allowed;
+			}
+			.bot-list {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+				gap: 16px;
+			}
+			.bot-card {
+				background: #f8f9fa;
+				border: 1px solid #e9ecef;
+				padding: 20px;
+				border-radius: 8px;
+			}
+			.bot-header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 16px;
+			}
+			.bot-name {
+				font-weight: 600;
+				font-size: 16px;
+				color: #2c3e50;
+			}
+			.bot-status {
+				padding: 4px 12px;
+				border-radius: 12px;
+				font-size: 12px;
+				font-weight: 600;
+			}
+			.bot-status.active {
+				background: #d4edda;
+				color: #155724;
+			}
+			.bot-status.stopped {
+				background: #f8d7da;
+				color: #721c24;
+			}
+			.bot-controls {
+				display: flex;
+				gap: 8px;
+			}
+			.log-section {
+				margin-top: 16px;
+			}
+			#logContent {
+				height: 300px;
+				overflow: auto;
+				background: #2c3e50;
+				padding: 16px;
+				border-radius: 6px;
+				font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+				font-size: 12px;
+				white-space: pre-wrap;
+				line-height: 1.5;
+				color: #ecf0f1;
+			}
+			.log-header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 12px;
+			}
+			select {
+				background: white;
+				color: #2c3e50;
+				border: 1px solid #dcdde1;
+				padding: 8px 12px;
+				border-radius: 6px;
+				cursor: pointer;
+				font-size: 14px;
+			}
+			select:focus {
+				outline: none;
+				border-color: #3498db;
+			}
+			table {
+				width: 100%;
+				border-collapse: collapse;
+			}
+			th {
+				background: #f8f9fa;
+				padding: 12px;
+				text-align: left;
+				font-weight: 600;
+				font-size: 13px;
+				color: #5a6c7d;
+				border-bottom: 2px solid #e9ecef;
+			}
+			td {
+				padding: 12px;
+				border-bottom: 1px solid #e9ecef;
+				font-size: 14px;
+			}
+			tr:hover {
+				background: #f8f9fa;
+			}
+			.actions {
+				display: flex;
+				gap: 8px;
+			}
+			.channel-list {
+				list-style: none;
+			}
+			.channel-item {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				padding: 12px 16px;
+				border-bottom: 1px solid #e9ecef;
+				font-size: 14px;
+			}
+			.channel-item:last-child {
+				border-bottom: none;
+			}
+			.channel-item:hover {
+				background: #f8f9fa;
+			}
+			.modal {
+				display: none;
+				position: fixed;
+				inset: 0;
+				background: rgba(0, 0, 0, 0.7);
+				z-index: 1000;
+				overflow: auto;
+				padding: 40px 20px;
+				align-items: center;
+				justify-content: center;
+			}
+			.modal.active {
+				display: flex;
+			}
+			.modal-content {
+				background: white;
+				border-radius: 8px;
+				padding: 30px;
+				max-width: 600px;
+				width: 100%;
+				max-height: 90vh;
+				overflow-y: auto;
+			}
+			.modal-content.large {
+				max-width: 1200px;
+			}
+			.modal-header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 24px;
+			}
+			.modal-header h2 {
+				margin: 0;
+				font-size: 20px;
+			}
+			.modal-body {
+				margin-bottom: 24px;
+			}
+			.modal-footer {
+				display: flex;
+				gap: 12px;
+				justify-content: flex-end;
+			}
+			.modal pre {
+				background: #2c3e50;
+				color: #ecf0f1;
+				padding: 20px;
+				border-radius: 6px;
+				white-space: pre-wrap;
+				font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+				line-height: 1.5;
+				font-size: 13px;
+			}
+			.log-timestamp {
+				color: #95a5a6;
+			}
+			.log-info {
+				color: #3498db;
+				font-weight: bold;
+			}
+			.log-error {
+				color: #e74c3c;
+				font-weight: bold;
+			}
+			.log-warning {
+				color: #f39c12;
+				font-weight: bold;
+			}
+			.full-width {
+				grid-column: 1 / -1;
+			}
+			.two-col {
+				display: grid;
+				grid-template-columns: 2fr 1fr;
+				gap: 20px;
+			}
+			.card-header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 20px;
+			}
+			.empty-state {
+				text-align: center;
+				padding: 40px;
+				color: #95a5a6;
+			}
+			.form-group {
+				margin-bottom: 20px;
+			}
+			.form-group label {
+				display: block;
+				margin-bottom: 8px;
+				font-weight: 500;
+				color: #2c3e50;
+				font-size: 14px;
+			}
+			.form-group input,
+			.form-group select {
+				width: 100%;
+				padding: 10px 12px;
+				border: 1px solid #dcdde1;
+				border-radius: 6px;
+				font-size: 14px;
+				color: #2c3e50;
+			}
+			.form-group input:focus,
+			.form-group select:focus {
+				outline: none;
+				border-color: #3498db;
+			}
+			.autocomplete {
+				position: relative;
+			}
+			.autocomplete-items {
+				position: absolute;
+				border: 1px solid #dcdde1;
+				background: white;
+				border-top: none;
+				z-index: 99;
+				top: 100%;
+				left: 0;
+				right: 0;
+				max-height: 200px;
+				overflow-y: auto;
+				border-radius: 0 0 6px 6px;
+				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			}
+			.autocomplete-items div {
+				padding: 10px;
+				cursor: pointer;
+				border-bottom: 1px solid #f8f9fa;
+			}
+			.autocomplete-items div:hover {
+				background-color: #f8f9fa;
+			}
+			.autocomplete-active {
+				background-color: #3498db !important;
+				color: white;
+			}
+			@media (max-width: 768px) {
+				.two-col {
+					grid-template-columns: 1fr;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="header">
+				<h1>Admin Dashboard</h1>
+			</div>
+
+			<div class="grid">
+				<!-- Bots Status -->
+				<div class="card full-width">
+					<div class="card-header">
+						<h2>Bots Status</h2>
+					</div>
+					<div class="bot-list" id="botsList"></div>
+				</div>
+
+				<!-- Logs -->
+				<div class="card full-width">
+					<h2>System Logs</h2>
+					<div class="log-header">
+						<select id="logFiles">
+							<!-- Will be populated -->
+						</select>
+						<button class="btn small" onclick="openLogModal()">
+							View Full Screen
+						</button>
+					</div>
+					<div id="logContent">Loading logs...</div>
+				</div>
+
+				<!-- Records and Channels -->
+				<div class="full-width two-col">
+					<!-- Records -->
+					<div class="card">
+						<div class="card-header">
+							<h2>Records (DiedOnSteroids)</h2>
+							<button class="btn small success" onclick="openAddRecordModal()">
+								+ Add Record
+							</button>
+						</div>
+						<table>
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>User</th>
+									<th>Movement</th>
+									<th>Weight (kg)</th>
+									<th>Date</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody id="recordsBody"></tbody>
+						</table>
+					</div>
+
+					<!-- Tracked Channels -->
+					<div class="card">
+						<div class="card-header">
+							<h2>Tracked Channels</h2>
+							<button class="btn small success" onclick="openAddChannelModal()">
+								+ Add
+							</button>
+						</div>
+						<ul class="channel-list" id="channelsList"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Log Modal -->
+		<div id="logModal" class="modal">
+			<div class="modal-content large">
+				<div class="modal-header">
+					<h2>Full Log View</h2>
+					<button class="btn secondary" onclick="closeLogModal()">Close</button>
+				</div>
+				<pre id="logModalContent"></pre>
+			</div>
+		</div>
+
+		<!-- Record Modal -->
+		<div id="recordModal" class="modal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2 id="recordModalTitle">Add Record</h2>
+				</div>
+				<div class="modal-body">
+					<form id="recordForm">
+						<input type="hidden" id="recordIndex" value="" />
+						<div class="form-group autocomplete">
+							<label for="recordUser">User</label>
+							<input
+								type="text"
+								id="recordUser"
+								placeholder="@username"
+								autocomplete="off"
+							/>
+							<div id="autocomplete-list" class="autocomplete-items"></div>
+						</div>
+						<div class="form-group">
+							<label for="recordMovement">Movement</label>
+							<input
+								type="text"
+								id="recordMovement"
+								placeholder="e.g., Deadlift, Squat, Bench Press"
+							/>
+						</div>
+						<div class="form-group">
+							<label for="recordWeight">Weight (kg)</label>
+							<input
+								type="number"
+								id="recordWeight"
+								step="0.1"
+								placeholder="e.g., 100.5"
+							/>
+						</div>
+						<div class="form-group">
+							<label for="recordDate">Date</label>
+							<input type="date" id="recordDate" />
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button class="btn secondary" onclick="closeRecordModal()">
+						Cancel
+					</button>
+					<button class="btn success" onclick="saveRecord()">Save</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Channel Modal -->
+		<div id="channelModal" class="modal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2 id="channelModalTitle">Add Channel</h2>
+				</div>
+				<div class="modal-body">
+					<form id="channelForm">
+						<input type="hidden" id="channelOldName" value="" />
+						<div class="form-group autocomplete">
+							<label for="channelName">Channel Name</label>
+							<input
+								type="text"
+								id="channelName"
+								placeholder="@channel_username"
+								autocomplete="off"
+							/>
+							<div
+								id="channel-autocomplete-list"
+								class="autocomplete-items"
+							></div>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button class="btn secondary" onclick="closeChannelModal()">
+						Cancel
+					</button>
+					<button class="btn success" onclick="saveChannel()">Save</button>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			let channels = [];
+			let records = [];
+			let userSuggestions = ['@dead1ift', '@sane_4eek', '@Liiiks_88'];
+			let channelSuggestions = [];
+
+			// Autocomplete function
+			function setupAutocomplete(inputId, suggestions, listId) {
+			    const input = document.getElementById(inputId);
+			    const list = document.getElementById(listId);
+			    let currentFocus = -1;
+
+			    input.addEventListener('input', function() {
+			        const val = this.value;
+			        closeAllLists();
+			        if (!val || !val.startsWith('@')) return;
+
+			        currentFocus = -1;
+			        const matches = suggestions.filter(s =>
+			            s.toLowerCase().includes(val.toLowerCase())
+			        );
+
+			        if (matches.length === 0) return;
+
+			        matches.forEach((match, i) => {
+			            const div = document.createElement('div');
+			            div.innerHTML = match.replace(new RegExp(val, 'gi'), `<strong>${val}</strong>`);
+			            div.addEventListener('click', function() {
+			                input.value = match;
+			                closeAllLists();
+			            });
+			            list.appendChild(div);
+			        });
+			    });
+
+			    input.addEventListener('keydown', function(e) {
+			        let items = list.getElementsByTagName('div');
+			        if (e.keyCode === 40) { // Down
+			            currentFocus++;
+			            addActive(items);
+			        } else if (e.keyCode === 38) { // Up
+			            currentFocus--;
+			            addActive(items);
+			        } else if (e.keyCode === 13) { // Enter
+			            e.preventDefault();
+			            if (currentFocus > -1 && items[currentFocus]) {
+			                items[currentFocus].click();
+			            }
+			        }
+			    });
+
+			    function addActive(items) {
+			        if (!items) return;
+			        removeActive(items);
+			        if (currentFocus >= items.length) currentFocus = 0;
+			        if (currentFocus < 0) currentFocus = items.length - 1;
+			        items[currentFocus].classList.add('autocomplete-active');
+			    }
+
+			    function removeActive(items) {
+			        for (let i = 0; i < items.length; i++) {
+			            items[i].classList.remove('autocomplete-active');
+			        }
+			    }
+
+			    function closeAllLists() {
+			        list.innerHTML = '';
+			    }
+
+			    document.addEventListener('click', function(e) {
+			        if (e.target !== input) closeAllLists();
+			    });
+			}
+
+			// Format log with colors
+			function formatLog(text) {
+			    return text
+			        .split('\n')
+			        .map(line => {
+			            line = line.replace(/^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})/g, '<span class="log-timestamp">$1</span>');
+			            line = line.replace(/\[INFO\]/g, '<span class="log-info">[INFO]</span>');
+			            line = line.replace(/\[ERROR\]/g, '<span class="log-error">[ERROR]</span>');
+			            line = line.replace(/\[WARNING\]/g, '<span class="log-warning">[WARNING]</span>');
+			            return line;
+			        })
+			        .join('\n');
+			}
+
+			// Logs
+			async function fetchLog(file) {
+			    const res = await fetch(`/api/logs?file=${file}`);
+			    const text = await res.text();
+			    return formatLog(text);
+			}
+
+			async function updateLog() {
+			    const file = document.getElementById('logFiles').value;
+			    if (!file) return;
+			    document.getElementById('logContent').innerHTML = await fetchLog(file);
+			}
+
+			function openLogModal() {
+			    const file = document.getElementById('logFiles').value;
+			    fetchLog(file).then(text => {
+			        document.getElementById('logModalContent').innerHTML = text;
+			        document.getElementById('logModal').classList.add('active');
+			    });
+			}
+
+			function closeLogModal() {
+			    document.getElementById('logModal').classList.remove('active');
+			}
+
+			// Bots
+			async function updateBots() {
+			    const res = await fetch('/api/bots');
+			    const bots = await res.json();
+			    const container = document.getElementById('botsList');
+			    container.innerHTML = bots.map(bot => `
+			        <div class="bot-card">
+			            <div class="bot-header">
+			                <span class="bot-name">${bot.name}</span>
+			                <span class="bot-status ${bot.active ? 'active' : 'stopped'}">
+			                    ${bot.active ? 'Active' : 'Stopped'}
+			                </span>
+			            </div>
+			            <div class="bot-controls">
+			                <button class="btn tiny success" onclick="controlBot('${bot.name}', 'start')">Start</button>
+			                <button class="btn tiny danger" onclick="controlBot('${bot.name}', 'stop')">Stop</button>
+			                <button class="btn tiny secondary" onclick="controlBot('${bot.name}', 'restart')">Restart</button>
+			            </div>
+			        </div>
+			    `).join('');
+			}
+
+			async function controlBot(name, action) {
+					try {
+							const form = new FormData();
+							form.append('name', name);
+
+							const res = await fetch(`/api/bots/${action}`, {
+									method: 'POST',
+									body: form
+							});
+
+							const data = await res.json();
+
+							if (!res.ok) {
+									alert(`Failed to control bot: ${data.message || 'Unknown error'}`);
+									console.error('Bot control error:', data);
+									return;
+							}
+
+							await updateBots();
+					} catch (error) {
+							alert(`Error: ${error.message}`);
+							console.error('Bot control exception:', error);
+					}
+			}
+
+			// Records Modal
+			function openAddRecordModal() {
+			    document.getElementById('recordModalTitle').textContent = 'Add Record';
+			    document.getElementById('recordIndex').value = '';
+			    document.getElementById('recordUser').value = '';
+			    document.getElementById('recordMovement').value = '';
+			    document.getElementById('recordWeight').value = '';
+			    document.getElementById('recordDate').value = new Date().toISOString().split('T')[0];
+			    document.getElementById('recordModal').classList.add('active');
+			}
+
+			function editRecord(index) {
+			    const r = records[index];
+			    document.getElementById('recordModalTitle').textContent = 'Edit Record';
+			    document.getElementById('recordIndex').value = index;
+			    document.getElementById('recordUser').value = r.user;
+			    document.getElementById('recordMovement').value = r.movement;
+			    document.getElementById('recordWeight').value = r.weight;
+			    document.getElementById('recordDate').value = r.date;
+			    document.getElementById('recordModal').classList.add('active');
+			}
+
+			function closeRecordModal() {
+			    document.getElementById('recordModal').classList.remove('active');
+			}
+
+			async function saveRecord() {
+			    const index = document.getElementById('recordIndex').value;
+			    const user = document.getElementById('recordUser').value;
+			    const movement = document.getElementById('recordMovement').value;
+			    const weight = document.getElementById('recordWeight').value;
+			    const date = document.getElementById('recordDate').value;
+
+			    if (!user || !movement || !weight || !date) {
+			        alert('Please fill all fields');
+			        return;
+			    }
+
+			    const form = new FormData();
+			    form.append('user', user);
+			    form.append('movement', movement);
+			    form.append('weight', weight);
+			    form.append('date', date);
+
+			    const endpoint = index === '' ? '/api/records/add' : '/api/records/edit';
+			    if (index !== '') {
+			        form.append('index', index);
+			    }
+
+			    await fetch(endpoint, { method: 'POST', body: form });
+			    closeRecordModal();
+			    location.reload();
+			}
+
+			function renderRecords() {
+			    const tbody = document.getElementById('recordsBody');
+			    if (records.length === 0) {
+			        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No records yet. Click "Add Record" to create one.</td></tr>';
+			        return;
+			    }
+			    tbody.innerHTML = records.map((r, i) => `
+			        <tr>
+			            <td>${i + 1}</td>
+			            <td>${r.user}</td>
+			            <td>${r.movement}</td>
+			            <td>${r.weight}</td>
+			            <td>${r.date}</td>
+			            <td class="actions">
+			                <button class="btn tiny" onclick="editRecord(${i})">Edit</button>
+			                <button class="btn tiny danger" onclick="deleteRecord(${i})">Delete</button>
+			            </td>
+			        </tr>
+			    `).join('');
+			}
+
+			async function loadRecords() {
+					records = {{ records | tojson | safe | default('[]') }};
+			    renderRecords();
+			}
+
+			async function deleteRecord(index) {
+			    if (!confirm('Are you sure you want to delete this record?')) return;
+			    const form = new FormData();
+			    form.append('index', index);
+			    await fetch('/api/records/delete', { method: 'POST', body: form });
+			    location.reload();
+			}
+
+			// Channels Modal
+			function openAddChannelModal() {
+			    document.getElementById('channelModalTitle').textContent = 'Add Channel';
+			    document.getElementById('channelOldName').value = '';
+			    document.getElementById('channelName').value = '';
+			    document.getElementById('channelModal').classList.add('active');
+			}
+
+			function editChannel(oldName) {
+			    document.getElementById('channelModalTitle').textContent = 'Edit Channel';
+			    document.getElementById('channelOldName').value = oldName;
+			    document.getElementById('channelName').value = oldName;
+			    document.getElementById('channelModal').classList.add('active');
+			}
+
+			function closeChannelModal() {
+			    document.getElementById('channelModal').classList.remove('active');
+			}
+
+			async function saveChannel() {
+			    const oldName = document.getElementById('channelOldName').value;
+			    const name = document.getElementById('channelName').value;
+
+			    if (!name) {
+			        alert('Please enter channel name');
+			        return;
+			    }
+
+			    const form = new FormData();
+			    const endpoint = oldName === '' ? '/api/channels/add' : '/api/channels/edit';
+
+			    if (oldName === '') {
+			        form.append('name', name);
+			    } else {
+			        form.append('old_name', oldName);
+			        form.append('new_name', name);
+			    }
+
+			    await fetch(endpoint, { method: 'POST', body: form });
+			    closeChannelModal();
+			    location.reload();
+			}
+
+			function renderChannels() {
+			    const list = document.getElementById('channelsList');
+			    if (channels.length === 0) {
+			        list.innerHTML = '<li class="empty-state">No channels tracked yet.</li>';
+			        return;
+			    }
+			    list.innerHTML = channels.map(ch => `
+			        <li class="channel-item">
+			            <span>${ch}</span>
+			            <div class="actions">
+			                <button class="btn tiny" onclick="editChannel('${ch}')">Edit</button>
+			                <button class="btn tiny danger" onclick="deleteChannel('${ch}')">Delete</button>
+			            </div>
+			        </li>
+			    `).join('');
+			}
+
+			async function loadChannels() {
+					channels = {{ channels | tojson | safe | default('[]') }};
+			    renderChannels();
+			}
+
+			async function deleteChannel(name) {
+			    if (!confirm(`Delete channel "${name}"?`)) return;
+			    const form = new FormData();
+			    form.append('name', name);
+			    await fetch('/api/channels/delete', { method: 'POST', body: form });
+			    location.reload();
+			}
+
+			// Initialize
+			document.addEventListener('DOMContentLoaded', () => {
+			    // Populate log files
+			    const logFiles = {{ logs | tojson | safe | default('[]') }};
+			    const select = document.getElementById('logFiles');
+			    select.innerHTML = logFiles.map(f => `<option value="${f}">${f}</option>`).join('');
+
+			    if (logFiles.length > 0) {
+			        updateLog();
+			        document.getElementById('logFiles').addEventListener('change', updateLog);
+			    }
+
+			    updateBots();
+			    loadRecords();
+			    loadChannels();
+
+			    // Setup autocomplete
+			    setupAutocomplete('recordUser', userSuggestions, 'autocomplete-list');
+			    setupAutocomplete('channelName', channelSuggestions, 'channel-autocomplete-list');
+
+			    // Close modals on outside click
+			    document.querySelectorAll('.modal').forEach(modal => {
+			        modal.addEventListener('click', (e) => {
+			            if (e.target === modal) {
+			                modal.classList.remove('active');
+			            }
+			        });
+			    });
+			});
+		</script>
+	</body>
+</html>

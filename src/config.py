@@ -1,32 +1,48 @@
-# config.py
 import os
 from dotenv import load_dotenv
+
+# Загружаем переменные окружения
 load_dotenv()
 
-BOT_TOKEN = os.getenv("BOT_TOKEN", "8226360976:AAGm0jeLtH3UikusTWbMzBlgeSHR0EQmL1Y")
+# --- Telegram API ---
+API_ID = int(os.getenv("API_ID", "123456"))
+API_HASH = os.getenv("API_HASH", "your_api_hash")
+BOT_TOKEN = os.getenv("BOT_TOKEN", "your_bot_token")
 
-# Common group / supergroup chat id where bot operates
-GROUP_ID = int(os.getenv("GROUP_ID", 1002511221161))
+# --- Группа, куда идёт пересылка ---
+GROUP_ID = int(os.getenv("GROUP_ID", "-1001234567890"))
+TOPIC_FORWARD = int(os.getenv("TOPIC_FORWARD", "0"))  # ID треда (опционально)
 
-# Topic/thread id where strength bot reacts (число топика)
-TOPIC_SIL = int(os.getenv("TOPIC_SIL", 5762))
+# --- Пути к данным ---
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+LOGS_DIR = os.path.join(DATA_DIR, "logs")
 
-# Telethon userbot settings for forwarder
-API_ID = int(os.getenv("API_ID", "21309518") or 21309518)
-API_HASH = os.getenv("API_HASH", "a3adb5b639768800cb1db4a59ff10281")
-SESSION_NAME = os.getenv("SESSION_NAME", "forwarder")
+CHANNELS_FILE = os.path.join(DATA_DIR, "channels.json")
+STATS_FILE = os.path.join(DATA_DIR, "stats.json")
+RECORDS_FILE = os.path.join(DATA_DIR, "records.json")
 
-# Topic/thread id for forwarder (пересылка)
-TOPIC_FORWARD = int(os.getenv("TOPIC_FORWARD", 5761))
+# --- Логи ---
+FORWARDER_LOG = os.path.join(LOGS_DIR, "bot_errors.log")
+SIL_LOG = os.path.join(LOGS_DIR, "sil_errors.log")
+WEBPANEL_LOG = os.path.join(LOGS_DIR, "webpanel.log")
 
-# Files
-RECORDS_FILE = os.getenv("RECORDS_FILE", "records.json")
-CHANNELS_FILE = os.getenv("CHANNELS_FILE", "channels.json")
+# --- Сессия Telethon ---
+SESSION_NAME = "forwarder_session"
 
-# Template
-CONGRATS_TEMPLATE = "💥 НОВЫЙ РЕКОРД!\n{user} — {kg} кг в {movement}!"
+# --- Уведомления ---
+ADMIN_CHAT_ID = int(os.getenv("ADMIN_CHAT_ID", "0"))  # Куда отправлять уведомления
+NOTIFIER_TOKEN = os.getenv("NOTIFIER_TOKEN", BOT_TOKEN)  # Можно использовать основной бот
 
-# Report interval
-REPORT_INTERVAL_DAYS = int(os.getenv("REPORT_INTERVAL_DAYS", "14"))
+# --- Настройки отчётов ---
+REPORT_HOUR = int(os.getenv("REPORT_HOUR", "21"))  # Время автоотчёта DiedOnSteroidsBot
+TIMEZONE = os.getenv("TIMEZONE", "Europe/Moscow")
 
-DATE_FORMAT = "%d-%m-%Y"
+# --- Веб-сервер ---
+WEB_HOST = os.getenv("WEB_HOST", "localhost")
+WEB_PORT = int(os.getenv("WEB_PORT", "9000"))
+WEB_LOG = os.path.join(os.path.dirname(__file__), "../data/logs/webpanel.log")
+
+# --- Создаём каталоги, если их нет ---
+for path in [DATA_DIR, LOGS_DIR]:
+    os.makedirs(path, exist_ok=True)
