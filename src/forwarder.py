@@ -10,8 +10,6 @@ import config
 from utils import load_json, save_json, record_stat
 from notifier import notify_admins
 
-logger = logger.getLogger("forwarder")
-
 # Session file path
 SESSION_PATH = os.path.join(os.path.dirname(__file__), "..", config.SESSION_NAME)
 logger.info(f"Using session file: {SESSION_PATH}")

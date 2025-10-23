@@ -112,7 +112,7 @@ def get_bots():
         if info["proc"] is not None:
             poll_result = info["proc"].poll()
             if poll_result is not None:  # Process has terminated
-                log.warning(f"Bot {name} terminated with code: {poll_result}")
+                logger.warning(f"Bot {name} terminated with code: {poll_result}")
                 
                 # Read last lines of log to see error
                 if info.get("log_file"):
@@ -120,7 +120,7 @@ def get_bots():
                         with open(info["log_file"], "r", encoding="utf-8") as f:
                             lines = f.readlines()
                             last_lines = ''.join(lines[-10:]) if lines else "No output"
-                            log.error(f"Bot {name} last output:\n{last_lines}")
+                            logger.error(f"Bot {name} last output:\n{last_lines}")
                     except:
                         pass
                 
@@ -139,7 +139,7 @@ async def control_bot(action: str, name: str = Form(...)):
     logger.info(f"Python executable: {sys.executable}")
     
     if name not in bot_status:
-        log.error(f"Bot not found: {name}")
+        logger.error(f"Bot not found: {name}")
         return JSONResponse(
             {"status": "error", "message": f"Bot '{name}' not found"}, 
             status_code=404
@@ -158,12 +158,12 @@ async def control_bot(action: str, name: str = Form(...)):
                         bot["proc"].wait(timeout=5)
                         logger.info(f"Bot {name} stopped gracefully")
                     except subprocess.TimeoutExpired:
-                        log.warning(f"Bot {name} didn't stop gracefully, killing...")
+                        logger.warning(f"Bot {name} didn't stop gracefully, killing...")
                         bot["proc"].kill()
                         bot["proc"].wait()
                         logger.info(f"Bot {name} killed")
                 except Exception as e:
-                    log.error(f"Error stopping bot {name}: {e}")
+                    logger.error(f"Error stopping bot {name}: {e}")
                 finally:
                     # Close log file
                     if bot.get("log_file_handle"):
@@ -178,7 +178,7 @@ async def control_bot(action: str, name: str = Form(...)):
         # Start process
         if action in ("start", "restart"):
             if bot["proc"] is not None and bot["proc"].poll() is None:
-                log.warning(f"Bot {name} is already running")
+                logger.warning(f"Bot {name} is already running")
                 return JSONResponse(
                     {"status": "error", "message": f"Bot '{name}' is already running"}, 
                     status_code=400
@@ -206,7 +206,7 @@ async def control_bot(action: str, name: str = Form(...)):
                         logger.info(f"Found script at: {script_path}")
                         break
                 else:
-                    log.error(f"Script not found in any location")
+                    logger.error(f"Script not found in any location")
                     return JSONResponse(
                         {"status": "error", "message": f"Script '{bot['script']}' not found. Tried: {script_path}"}, 
                         status_code=500
@@ -249,13 +249,13 @@ async def control_bot(action: str, name: str = Form(...)):
                 poll_result = bot["proc"].poll()
                 
                 if poll_result is not None:
-                    log.error(f"Bot {name} exited immediately with code: {poll_result}")
+                    logger.error(f"Bot {name} exited immediately with code: {poll_result}")
                     
                     # Read the log to see what went wrong
                     log_file_handle.flush()
                     with open(log_file_path, "r", encoding="utf-8") as f:
                         error_output = f.read()
-                        log.error(f"Bot {name} error output:\n{error_output}")
+                        logger.error(f"Bot {name} error output:\n{error_output}")
                     
                     bot["active"] = False
                     bot["proc"] = None
@@ -268,7 +268,7 @@ async def control_bot(action: str, name: str = Form(...)):
                 logger.info(f"Bot {name} is running successfully")
                 
             except Exception as e:
-                log.exception(f"Error opening log file or starting process: {e}")
+                logger.exception(f"Error opening log file or starting process: {e}")
                 return JSONResponse(
                     {"status": "error", "message": f"Failed to start: {str(e)}"}, 
                     status_code=500
@@ -280,7 +280,7 @@ async def control_bot(action: str, name: str = Form(...)):
         })
         
     except Exception as e:
-        log.exception(f"Error controlling bot {name}: {e}")
+        logger.exception(f"Error controlling bot {name}: {e}")
         bot["active"] = False
         bot["proc"] = None
         return JSONResponse(

@@ -11,5 +11,5 @@ if __name__ == "__main__":
         logger.info("Records bot stopped by user")
         sys.exit(0)
     except Exception as e:
-        log.exception(f"Records bot error: {e}")
+        logger.exception(f"Records bot error: {e}")
         sys.exit(1)

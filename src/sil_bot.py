@@ -60,11 +60,11 @@ async def safe_reply(bot: Bot, chat_id, text, thread_id=None, **kwargs):
             return await bot.send_message(chat_id, text, message_thread_id=thread_id, **kwargs)
         return await bot.send_message(chat_id, text, **kwargs)
     except Exception as e:
-        log.warning("safe_reply error: %s", e)
+        logger.warning("safe_reply error: %s", e)
         try:
             return await bot.send_message(chat_id, text, **kwargs)
         except Exception:
-            log.exception("safe_reply final error")
+            logger.exception("safe_reply final error")
             return None
 
 async def safe_reply_photo(bot: Bot, chat_id, photo_buf, caption=None, thread_id=None, **kwargs):
@@ -76,12 +76,12 @@ async def safe_reply_photo(bot: Bot, chat_id, photo_buf, caption=None, thread_id
             return await bot.send_photo(chat_id, photo=photo_buf, caption=caption, message_thread_id=thread_id, **kwargs)
         return await bot.send_photo(chat_id, photo=photo_buf, caption=caption, **kwargs)
     except Exception as e:
-        log.warning("safe_reply_photo error: %s", e)
+        logger.warning("safe_reply_photo error: %s", e)
         try:
             photo_buf.seek(0)
             return await bot.send_photo(chat_id, photo=photo_buf, caption=caption, **kwargs)
         except Exception:
-            log.exception("safe_reply_photo final error")
+            logger.exception("safe_reply_photo final error")
             return None
 
 
@@ -266,7 +266,7 @@ async def send_auto_report_job(context: ContextTypes.DEFAULT_TYPE):
         await context.bot.send_photo(chat_id=config.GROUP_ID, photo=buf, caption=caption,
                                      message_thread_id=config.TOPIC_FORWARD or None)
     except Exception as e:
-        log.exception("send_auto_report_job error: %s", e)
+        logger.exception("send_auto_report_job error: %s", e)
         await notify_admins(f"Sil bot auto-report error: {e}")
 
 
@@ -290,12 +290,12 @@ async def check_trigger_and_send_report(context: ContextTypes.DEFAULT_TYPE):
             except Exception:
                 pass
     except Exception as e:
-        log.exception("check_trigger_and_send_report error: %s", e)
+        logger.exception("check_trigger_and_send_report error: %s", e)
 
 
 # --- Обработка ошибок ---
 async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE):
-    log.exception("⚠️ Sil bot error: %s", context.error)
+    logger.exception("⚠️ Sil bot error: %s", context.error)
     try:
         if update and getattr(update, "message", None):
             await update.message.reply_text("⚠️ Произошла ошибка, но бот продолжает работу.")
@@ -335,7 +335,7 @@ def run_polling():
         logger.info("Sil bot stopped.")
         
     except Exception as e:
-        log.exception(f"❌ Critical error in run_polling: {e}")
+        logger.exception(f"❌ Critical error in run_polling: {e}")
         raise
 
 if __name__ == "__main__":
