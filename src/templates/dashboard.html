@@ -395,7 +395,7 @@
 					<!-- Records -->
 					<div class="card">
 						<div class="card-header">
-							<h2>Records (DiedOnSteroids)</h2>
+							<h2>Records</h2>
 							<button class="btn small success" onclick="openAddRecordModal()">
 								+ Add Record
 							</button>
@@ -747,7 +747,9 @@
 			    tbody.innerHTML = records.map((r, i) => `
 			        <tr>
 			            <td>${i + 1}</td>
-			            <td>${r.user}</td>
+			            <td>
+										<a href="https://t.me/${r.user.replace("@", "")}" style="text-decoration: none; color: inherit; cursor: pointer;">${r.user}</a>
+									</td>
 			            <td>${r.movement}</td>
 			            <td>${r.weight}</td>
 			            <td>${r.date}</td>
@@ -823,7 +825,7 @@
 			    }
 			    list.innerHTML = channels.map(ch => `
 			        <li class="channel-item">
-			            <span>${ch}</span>
+			            <a href="https://t.me/${ch.replace("@", "")}" style="text-decoration: none; color: inherit; cursor: pointer;">${ch}</a>
 			            <div class="actions">
 			                <button class="btn tiny" onclick="editChannel('${ch}')">Edit</button>
 			                <button class="btn tiny danger" onclick="deleteChannel('${ch}')">Delete</button>

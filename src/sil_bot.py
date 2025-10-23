@@ -3,7 +3,7 @@ import io
 import json
 import re
 import time
-import logging
+from logger import logger
 import asyncio
 from datetime import datetime, timezone, timedelta
 
@@ -30,15 +30,6 @@ from notifier import notify_admins
 
 # --- Логирование ---
 ensure_dir(os.path.dirname(config.SIL_LOG))
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.FileHandler(config.SIL_LOG, encoding="utf-8"),
-        logging.StreamHandler()
-    ]
-)
-log = logging.getLogger("sil_bot")
 
 # --- Константы ---
 MOVE_MAP = {
@@ -334,14 +325,14 @@ def build_app():
 def run_polling():
     try:
         app = build_app()
-        log.info("✅ Sil bot starting polling...")
-        log.info(f"📋 Bot token: {config.BOT_TOKEN[:10]}...")
-        log.info(f"📬 Target group: {config.GROUP_ID}")
+        logger.info("✅ Sil bot starting polling...")
+        logger.info(f"📋 Bot token: {config.BOT_TOKEN[:10]}...")
+        logger.info(f"📬 Target group: {config.GROUP_ID}")
         if config.TOPIC_FORWARD:
-            log.info(f"💬 Target topic: {config.TOPIC_FORWARD}")
+            logger.info(f"💬 Target topic: {config.TOPIC_FORWARD}")
         
         app.run_polling(allowed_updates=None, close_loop=False)
-        log.info("Sil bot stopped.")
+        logger.info("Sil bot stopped.")
         
     except Exception as e:
         log.exception(f"❌ Critical error in run_polling: {e}")

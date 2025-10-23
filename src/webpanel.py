@@ -1,6 +1,6 @@
 import os
 import json
-import logging
+from logger import logger
 import sys
 import subprocess
 import time
@@ -13,15 +13,7 @@ import config
 
 # Logging
 ensure_dir(os.path.dirname(config.WEB_LOG))
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.FileHandler(config.WEB_LOG, encoding="utf-8"),
-        logging.StreamHandler()
-    ]
-)
-log = logging.getLogger("webpanel")
+
 
 app = FastAPI()
 
@@ -52,7 +44,7 @@ ensure_dir(LOGS_DIR)
 # Bot status storage (subprocess handles)
 bot_status = {
     "Forwarder": {"proc": None, "active": False, "script": "forwarder_main.py", "log_file": None},
-    "DiedOnSteroids": {"proc": None, "active": False, "script": "sil_bot.py", "log_file": None},
+    "Records": {"proc": None, "active": False, "script": "sil_bot.py", "log_file": None},
 }
 
 # --- Routes ---
@@ -139,12 +131,12 @@ def get_bots():
 
 @app.post("/api/bots/{action}")
 async def control_bot(action: str, name: str = Form(...)):
-    log.info(f"=== BOT CONTROL REQUEST ===")
-    log.info(f"Action: {action}")
-    log.info(f"Name: {name}")
-    log.info(f"Current working directory: {os.getcwd()}")
-    log.info(f"Script directory: {os.path.dirname(__file__)}")
-    log.info(f"Python executable: {sys.executable}")
+    logger.info(f"=== BOT CONTROL REQUEST ===")
+    logger.info(f"Action: {action}")
+    logger.info(f"Name: {name}")
+    logger.info(f"Current working directory: {os.getcwd()}")
+    logger.info(f"Script directory: {os.path.dirname(__file__)}")
+    logger.info(f"Python executable: {sys.executable}")
     
     if name not in bot_status:
         log.error(f"Bot not found: {name}")
@@ -159,17 +151,17 @@ async def control_bot(action: str, name: str = Form(...)):
         # Stop running process
         if action in ("stop", "restart"):
             if bot["proc"] is not None:
-                log.info(f"Stopping bot {name}, PID: {bot['proc'].pid}")
+                logger.info(f"Stopping bot {name}, PID: {bot['proc'].pid}")
                 try:
                     bot["proc"].terminate()
                     try:
                         bot["proc"].wait(timeout=5)
-                        log.info(f"Bot {name} stopped gracefully")
+                        logger.info(f"Bot {name} stopped gracefully")
                     except subprocess.TimeoutExpired:
                         log.warning(f"Bot {name} didn't stop gracefully, killing...")
                         bot["proc"].kill()
                         bot["proc"].wait()
-                        log.info(f"Bot {name} killed")
+                        logger.info(f"Bot {name} killed")
                 except Exception as e:
                     log.error(f"Error stopping bot {name}: {e}")
                 finally:
@@ -181,7 +173,7 @@ async def control_bot(action: str, name: str = Form(...)):
                     bot["proc"] = None
                     bot["active"] = False
             else:
-                log.info(f"Bot {name} was not running")
+                logger.info(f"Bot {name} was not running")
 
         # Start process
         if action in ("start", "restart"):
@@ -196,8 +188,8 @@ async def control_bot(action: str, name: str = Form(...)):
             script_dir = os.path.dirname(os.path.abspath(__file__))
             script_path = os.path.join(script_dir, bot["script"])
             
-            log.info(f"Looking for script at: {script_path}")
-            log.info(f"Script exists: {os.path.exists(script_path)}")
+            logger.info(f"Looking for script at: {script_path}")
+            logger.info(f"Script exists: {os.path.exists(script_path)}")
             
             if not os.path.exists(script_path):
                 # Try alternative paths
@@ -208,10 +200,10 @@ async def control_bot(action: str, name: str = Form(...)):
                 ]
                 
                 for alt_path in alternative_paths:
-                    log.info(f"Trying alternative path: {alt_path}")
+                    logger.info(f"Trying alternative path: {alt_path}")
                     if os.path.exists(alt_path):
                         script_path = alt_path
-                        log.info(f"Found script at: {script_path}")
+                        logger.info(f"Found script at: {script_path}")
                         break
                 else:
                     log.error(f"Script not found in any location")
@@ -220,13 +212,13 @@ async def control_bot(action: str, name: str = Form(...)):
                         status_code=500
                     )
             
-            log.info(f"Starting bot {name} with script: {script_path}")
+            logger.info(f"Starting bot {name} with script: {script_path}")
             
             # Prepare log file
             log_file_path = os.path.join(LOGS_DIR, f"{name.lower()}_subprocess.log")
             bot["log_file"] = log_file_path
             
-            log.info(f"Bot output will be logged to: {log_file_path}")
+            logger.info(f"Bot output will be logged to: {log_file_path}")
             
             try:
                 log_file_handle = open(log_file_path, "a", encoding="utf-8")
@@ -250,7 +242,7 @@ async def control_bot(action: str, name: str = Form(...)):
                 bot["log_file_handle"] = log_file_handle
                 bot["active"] = True
                 
-                log.info(f"Bot {name} started with PID: {bot['proc'].pid}")
+                logger.info(f"Bot {name} started with PID: {bot['proc'].pid}")
                 
                 # Wait a bit and check if it's still running
                 time.sleep(1)
@@ -273,7 +265,7 @@ async def control_bot(action: str, name: str = Form(...)):
                         status_code=500
                     )
                 
-                log.info(f"Bot {name} is running successfully")
+                logger.info(f"Bot {name} is running successfully")
                 
             except Exception as e:
                 log.exception(f"Error opening log file or starting process: {e}")
@@ -323,11 +315,11 @@ def edit_record(index: int = Form(...), user: str = Form(...), movement: str = F
 # Cleanup on shutdown
 @app.on_event("shutdown")
 def shutdown_event():
-    log.info("Shutting down web panel, stopping all bots...")
+    logger.info("Shutting down web panel, stopping all bots...")
     for name, info in bot_status.items():
         if info["proc"] is not None:
             try:
-                log.info(f"Terminating bot {name}")
+                logger.info(f"Terminating bot {name}")
                 info["proc"].terminate()
                 info["proc"].wait(timeout=5)
             except:

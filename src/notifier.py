@@ -2,7 +2,7 @@
 import urllib.request
 import urllib.parse
 import json
-import logging
+from logger import logger
 import config
 
 # Simple notifier using Telegram Bot HTTP API (no extra deps).
@@ -25,7 +25,7 @@ def _bot_api(method, params=None, files=None):
         with urllib.request.urlopen(req, timeout=10) as resp:
             return json.loads(resp.read().decode("utf-8"))
     except Exception as e:
-        logging.error(f"Notifier _bot_api error: {e}")
+        logger.error(f"Notifier _bot_api error: {e}")
         return None
 
 def notify_text(chat_id, text):
@@ -33,7 +33,7 @@ def notify_text(chat_id, text):
         params = {"chat_id": chat_id, "text": text, "parse_mode": "HTML"}
         return _bot_api("sendMessage", params=params)
     except Exception as e:
-        logging.error(f"notify_text error: {e}")
+        logger.error(f"notify_text error: {e}")
         return None
 
 def notify_admins(text):
@@ -42,6 +42,6 @@ def notify_admins(text):
     """
     target = config.ADMIN_CHAT_ID or config.GROUP_ID
     if not target:
-        logging.warning("notify_admins: no ADMIN_CHAT_ID or GROUP_ID configured")
+        logger.warning("notify_admins: no ADMIN_CHAT_ID or GROUP_ID configured")
         return
     return notify_text(target, text)

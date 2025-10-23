@@ -35,7 +35,7 @@ ADMIN_CHAT_ID = int(os.getenv("ADMIN_CHAT_ID", "0"))  # Куда отправл�
 NOTIFIER_TOKEN = os.getenv("NOTIFIER_TOKEN", BOT_TOKEN)  # Можно использовать основной бот
 
 # --- Настройки отчётов ---
-REPORT_HOUR = int(os.getenv("REPORT_HOUR", "21"))  # Время автоотчёта DiedOnSteroidsBot
+REPORT_HOUR = int(os.getenv("REPORT_HOUR", "21"))  # Время автоотчёта RecordsBot
 TIMEZONE = os.getenv("TIMEZONE", "Europe/Moscow")
 
 # --- Веб-сервер ---

@@ -1,6 +1,6 @@
 # src/forwarder.py
 import asyncio
-import logging
+from logger import logger
 import time
 import os
 from telethon import TelegramClient, events
@@ -10,13 +10,7 @@ import config
 from utils import load_json, save_json, record_stat
 from notifier import notify_admins
 
-# Logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    encoding="utf-8"
-)
-logger = logging.getLogger("forwarder")
+logger = logger.getLogger("forwarder")
 
 # Session file path
 SESSION_PATH = os.path.join(os.path.dirname(__file__), "..", config.SESSION_NAME)

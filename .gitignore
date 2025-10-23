@@ -1,0 +1,70 @@
+# --- Python cache & compiled files ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# --- Virtual environments ---
+venv/
+.venv/
+
+# --- Logs ---
+logs/
+*.log
+
+# --- Configs & secrets ---
+config.json
+*.env
+.env.*
+.env.local
+.env.production
+.env.development
+
+# --- Static & media ---
+static/
+media/
+uploads/
+*.tmp
+
+# --- Build & packaging ---
+build/
+dist/
+.eggs/
+*.egg-info/
+*.egg
+wheels/
+*.manifest
+*.spec
+
+# --- IDE / Editor files ---
+.vscode/
+.idea/
+*.iml
+*.sublime-project
+*.sublime-workspace
+
+# --- OS files ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Test / Coverage ---
+.coverage
+.cache/
+pytest_cache/
+*.cover
+coverage.xml
+nosetests.xml
+test-results/
+
+# --- Uvicorn / FastAPI specific ---
+*.pid
+
+# --- Custom for tg-group-bot ---
+# (всё, что не нужно в git)
+src/__pycache__/
+src/static/
+src/logs/
+src/*.log

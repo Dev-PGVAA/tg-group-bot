@@ -1,7 +1,7 @@
 # src/utils.py
 import json
 import os
-import logging
+from logger import logger
 from datetime import datetime
 
 def ensure_dir(path):
@@ -14,7 +14,7 @@ def ensure_file(path, default):
             with open(path, "w", encoding="utf-8") as f:
                 json.dump(default, f, ensure_ascii=False, indent=2)
         except Exception as e:
-            logging.error(f"ensure_file write error {path}: {e}")
+            logger.error(f"ensure_file write error {path}: {e}")
 
 def load_json(path, default):
     ensure_file(path, default)
@@ -22,7 +22,7 @@ def load_json(path, default):
         with open(path, "r", encoding="utf-8") as f:
             return json.load(f)
     except Exception as e:
-        logging.error(f"load_json error {path}: {e}")
+        logger.error(f"load_json error {path}: {e}")
         return default
 
 def save_json(path, data):
@@ -31,7 +31,7 @@ def save_json(path, data):
         with open(path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
     except Exception as e:
-        logging.error(f"save_json error {path}: {e}")
+        logger.error(f"save_json error {path}: {e}")
 
 def record_stat(stats_path, channel):
     """
@@ -51,5 +51,5 @@ def tail(path, lines=200):
             all_lines = f.read().splitlines()
             return all_lines[-lines:]
     except Exception as e:
-        logging.error(f"tail error {path}: {e}")
+        logger.error(f"tail error {path}: {e}")
         return []
