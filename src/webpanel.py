@@ -291,8 +291,19 @@ async def control_bot(action: str, name: str = Form(...)):
 # --- Records API ---
 @app.post("/api/records/add")
 def add_record(user: str = Form(...), movement: str = Form(...), weight: float = Form(...), date: str = Form(...)):
+    # Преобразуем формат даты
+    try:
+        formatted_date = datetime.strptime(date, "%Y-%m-%d").strftime("%d.%m.%Y")
+    except ValueError:
+        formatted_date = date  # если дата уже в нужном формате
+
     records = load_json(RECORDS_FILE, [])
-    records.append({"user": user, "movement": movement, "weight": weight, "date": date})
+    records.append({
+        "user": user,
+        "movement": movement,
+        "weight": weight,
+        "date": formatted_date
+    })
     save_json(RECORDS_FILE, records)
     return JSONResponse({"status": "ok"})
 
@@ -306,11 +317,23 @@ def delete_record(index: int = Form(...)):
 
 @app.post("/api/records/edit")
 def edit_record(index: int = Form(...), user: str = Form(...), movement: str = Form(...), weight: float = Form(...), date: str = Form(...)):
+    # Преобразуем формат даты
+    try:
+        formatted_date = datetime.strptime(date, "%Y-%m-%d").strftime("%d.%m.%Y")
+    except ValueError:
+        formatted_date = date
+
     records = load_json(RECORDS_FILE, [])
     if 0 <= index < len(records):
-        records[index] = {"user": user, "movement": movement, "weight": weight, "date": date}
+        records[index] = {
+            "user": user,
+            "movement": movement,
+            "weight": weight,
+            "date": formatted_date
+        }
         save_json(RECORDS_FILE, records)
     return JSONResponse({"status": "ok"})
+
 
 # Cleanup on shutdown
 @app.on_event("shutdown")

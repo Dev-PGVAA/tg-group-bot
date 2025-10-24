@@ -1,0 +1,23 @@
+
+
+=== Bot started at 2025-10-24 21:40:24 ===
+INFO    : 2025-10-24 21:40:25 - Using session file: /Users/artem/Documents/Develop/Projects/tg-group-bot/src/../forwarder_session
+INFO    : 2025-10-24 21:40:25 - Loaded 7 channels: ['@imstrong505', '@borcekach1', '@bipolyarkasarych', '@sportXpres', '@blackcatleo9', '@poltorapomidora', '@real_kabanchik']
+INFO    : 2025-10-24 21:40:25 - ✅ Session file found: /Users/artem/Documents/Develop/Projects/tg-group-bot/src/../forwarder_session.session
+INFO    : 2025-10-24 21:40:25 - 🚀 Starting forwarder...
+INFO    : 2025-10-24 21:40:25 - ✅ Logged in as: bot (@par4d9xy)
+INFO    : 2025-10-24 21:40:25 - Loaded 7 channels: ['@imstrong505', '@borcekach1', '@bipolyarkasarych', '@sportXpres', '@blackcatleo9', '@poltorapomidora', '@real_kabanchik']
+INFO    : 2025-10-24 21:40:25 - 📋 Tracking 7 channels
+INFO    : 2025-10-24 21:40:25 - 🔗 Joining channels...
+INFO    : 2025-10-24 21:40:25 - ✅ Joined channel @imstrong505
+INFO    : 2025-10-24 21:40:27 - ✅ Joined channel @borcekach1
+INFO    : 2025-10-24 21:40:28 - ✅ Joined channel @bipolyarkasarych
+INFO    : 2025-10-24 21:40:29 - ✅ Joined channel @sportXpres
+INFO    : 2025-10-24 21:40:30 - ✅ Joined channel @blackcatleo9
+INFO    : 2025-10-24 21:40:31 - ✅ Joined channel @poltorapomidora
+INFO    : 2025-10-24 21:40:32 - ✅ Joined channel @real_kabanchik
+INFO    : 2025-10-24 21:40:33 - ✅ Channel joining complete
+INFO    : 2025-10-24 21:40:33 - ✅ Forwarder is now running and listening for messages...
+INFO    : 2025-10-24 21:40:33 - 📬 Messages will be forwarded to GROUP_ID: -1002511221161
+INFO    : 2025-10-24 21:40:33 - 💬 Using topic ID: 5761
+Forwarder stopped by user
