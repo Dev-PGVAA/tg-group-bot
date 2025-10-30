@@ -1,12 +1,6 @@
 [
 	{
 		"user": "@dead1ift",
-		"movement": "Жим",
-		"weight": 107.5,
-		"date": "21-10-2025"
-	},
-	{
-		"user": "@dead1ift",
 		"movement": "Присед",
 		"weight": 110.0,
 		"date": "21-10-2025"
@@ -34,5 +28,11 @@
 		"movement": "Строгий подъем на бицепс",
 		"weight": 50.0,
 		"date": "22-10-2025"
+	},
+	{
+		"user": "@dead1ift",
+		"movement": "1231",
+		"weight": 12.0,
+		"date": "26.10.2025"
 	}
 ]

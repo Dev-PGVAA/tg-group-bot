@@ -1,7 +1,7 @@
 # src/utils.py
 import json
 import os
-from logger import logger
+from src.logger import logger
 from datetime import datetime
 
 def ensure_dir(path):
