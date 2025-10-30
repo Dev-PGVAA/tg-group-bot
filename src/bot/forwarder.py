@@ -44,25 +44,26 @@ async def try_join_channel(chan):
 
 # --- Update monitored channels ---
 async def update_monitored_channels():
-    """Обновляет список отслеживаемых каналов"""
     global monitored_entities
     monitored_entities = []
-    
     reload_channels()
     if not channels:
         logger.warning("No channels to monitor")
         return
-    
+
     logger.info(f"🔄 Updating monitored channels: {channels}")
-    
     for chan in channels:
         try:
             entity = await client.get_entity(chan)
-            monitored_entities.append(entity.id)
-            logger.info(f"✓ Monitoring: {chan} (ID: {entity.id})")
+            # Важно: для каналов ID всегда отрицательный в event.chat_id
+            chat_id = -1000000000000 - entity.id if entity.id > 1000000000000 else -entity.id
+            # Но проще: просто используем input_peer_to_peer_id или get_peer_id
+            from telethon.utils import get_peer_id
+            peer_id = get_peer_id(entity)
+            monitored_entities.append(peer_id)
+            logger.info(f"✓ Monitoring: {chan} (Peer ID: {peer_id})")
         except Exception as e:
             logger.warning(f"❌ Cannot get entity for {chan}: {e}")
-    
     logger.info(f"📡 Total monitored entities: {len(monitored_entities)} - IDs: {monitored_entities}")
 
 # --- Command handler ---
